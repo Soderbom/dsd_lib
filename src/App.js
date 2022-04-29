@@ -18,9 +18,8 @@ function App() {
   };
 
   function isAuth() {
-
     // TODO Skapa en riktigt inloggning
-    setAuth(true);
+    setAuth(false);
   }
 
   useEffect(() => {
@@ -32,10 +31,16 @@ function App() {
       <Router>
         <div>
         <Routes>
-        <Route path="/" element={isAuthenticated ? (<Warehouse setAuth={setAuth} />) : (<Navigate replace to="/login" />)}/>
+          {/*Tillfällig logik för att kunna nå alla sidor oavsett*/}
+          <Route path="/" element={<Warehouse setAuth={setAuth} />}/>
+          <Route path="/login" element={<Login setAuth={setAuth} />} />
+          <Route path="/register" element={<Register setAuth={setAuth} /> }/>
+          <Route path="/warehouse" element={<Warehouse setAuth={setAuth} />}/>
+
+          {/* <Route path="/" element={isAuthenticated ? (<Warehouse setAuth={setAuth} />) : (<Navigate replace to="/login" />)}/>
           <Route path="/login" element={!isAuthenticated ? (<Login setAuth={setAuth} />) : (<Navigate replace to="/warehouse" />)} />
           <Route path="/register" element={!isAuthenticated ? <Register setAuth={setAuth} /> : (<Navigate replace to="/warehouse" />)}/>
-          <Route path="/warehouse" element={isAuthenticated ? (<Warehouse setAuth={setAuth} />) : (<Navigate replace to="/login" />)}/>
+          <Route path="/warehouse" element={isAuthenticated ? (<Warehouse setAuth={setAuth} />) : (<Navigate replace to="/login" />)}/> */}
         </Routes>
         </div>
       </Router>
