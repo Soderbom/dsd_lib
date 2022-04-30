@@ -10,6 +10,8 @@ import Warehouse from "./components/Warehouse";
 import Login from "./components/Login";
 import Register from "./components/Register";
 
+// TODO Se över kommentarer
+
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
