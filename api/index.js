@@ -14,7 +14,7 @@ app.get("/", async (req, res) => {
     } catch (err) {
         console.error("Something went wrong!");
     }
-})
+});
 
 app.listen(5000,() => {
     console.log("Starting Express...");

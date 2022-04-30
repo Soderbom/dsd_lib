@@ -4,23 +4,26 @@ const bcrypt = require("bcrypt");
 const jwtGenerator = require("./jwtGenerator");
 const jsonwebtoken = require("jsonwebtoken");
 
+// TODO Verifiera korrekt epost
 
 router.post("/register", async (req, res) => {
     try {
-        // TODO Implementera
-        // Ta emot information från body
+        // Deconstruct body
+        const { username, email, password } = req.body;
 
-        // TODO Packetera till MySQL transaktion???
-            // Kontrollera om användaren existerar OBS kräver API route
+        // Hasha lösenord
+        const saltRound = 10;
+        const salt = await bcrypt.genSalt(saltRound);
+        const bcryptPassword = await bcrypt.hash(password, salt);    
 
-            // Hasha lösenord
-            const saltRound = 10;
-            const salt = await bcrypt.genSalt(saltRound);
-            const bcryptPassword = await bcrypt.hash(password, salt);    
+        // Kör store procedure för addUser
+        const addUser = await pool.query("CALL add_user ($1, $2, $3)", [username, email, bcryptPassword]);
 
-            // Skicka query för att lägga till
+        // TODO Feedback om transaktionen misslyckades
 
         // Generera JWT för användaren
+        const jwtToken = jwtGenerator(addUser.rows[0].email, addUser.rows[0].username);
+        return res.json({jwtToken});
     } catch (err) {
         console.error(err.message);
     }
@@ -29,15 +32,25 @@ router.post("/register", async (req, res) => {
 
 router.post("/login", async (req, res) => {
     try {
-        // TODO Implementera
-        // Ta emot information från body
+        // Deconstruct body
+        const { email, password } = req.body;
 
         // Hasha lösenord
+        const saltRound = 10;
+        const salt = await bcrypt.genSalt(saltRound);
+        const bcryptPassword = await bcrypt.hash(password, salt);    
 
         // Skicka info till databas för verifiering
-        // OBS min tidigare version fick lösenordet skickat till sig, men jag misstänker att detta kan leda till en säkerhetsrisk
+        const user = await pool.query("SELECT username FROM Users WHERE email = $1 AND pwhash = $2", [email, bcryptPassword]);
 
+        // Returnera unauthorized om ingen användare hittas
+        if (user.rows.length !== 1){
+            return res.status(401).json("Wrong username or password");
+        }
+            
         // Generera JWT för användaren
+        const jwtToken = jwtGenerator(addUser.rows[0].email, addUser.rows[0].username);
+        return res.json({jwtToken});        
     } catch (err) {
         console.error(err.message);
     }
