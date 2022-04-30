@@ -3,8 +3,9 @@ require("dotenv").config();
 
 // TODO Vilken information vill vi ha från användaren?
 // Uppdatera även authorization
-function jwtGenerator(username) {
+function jwtGenerator(email, username) {
     const payload = {
+        email: email,
         username: username
     };
 
