@@ -11,8 +11,9 @@ router.delete("/return_book", async (req, res) => {
         await connection.query("CALL return_book(?, ?)", [email, book_id], (err, result) => {
             if (err) {
                 console.error(err.message);
+            } else {
+                res.status(200).json(result);
             }
-            res.json(result);
         });
         
     } catch (err) {
