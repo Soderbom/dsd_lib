@@ -1,32 +1,40 @@
 const router = require("express").Router();
-const pool = require("../db");
+const conn = require("../db");
 const bcrypt = require("bcrypt");
 const jwtGenerator = require("./jwtGenerator");
-const jsonwebtoken = require("jsonwebtoken");
 
 // TODO Verifiera korrekt epost
 
 router.post("/register", async (req, res) => {
-    try {
+    
+    try {        
         // Deconstruct body
         const { username, email, password } = req.body;
 
         // Hasha lösenord
         const saltRound = 10;
         const salt = await bcrypt.genSalt(saltRound);
-        const bcryptPassword = await bcrypt.hash(password, salt);    
+        const bcryptPassword = await bcrypt.hash(password, salt);
+        // Kör store procedure för addUser     
 
-        // Kör store procedure för addUser
-        const addUser = await pool.query("CALL add_user ($1, $2, $3)", [username, email, bcryptPassword]);
-
-        // TODO Feedback om transaktionen misslyckades
-
-        // Generera JWT för användaren
-        const jwtToken = jwtGenerator(addUser.rows[0].email, addUser.rows[0].username);
-        return res.json({jwtToken});
+        await conn.query("CALL add_user(?,?,?)", [email, username, bcryptPassword], (err, result) => {
+            if (err) {
+                console.error(err.message);
+            } else {
+                // Generera JWT för användaren om transaktionen lyckades
+                if (result.length > 1)
+                {
+                    const jwtToken = jwtGenerator(email, username)
+                    res.status(200).json({jwtToken});
+                } else {
+                    res.status(403).json("User exists.")
+                }
+            }
+        }); 
     } catch (err) {
         console.error(err.message);
     }
+    
 });
 
 
@@ -34,29 +42,39 @@ router.post("/login", async (req, res) => {
     try {
         // Deconstruct body
         const { email, password } = req.body;
-
-        // Hasha lösenord
-        const saltRound = 10;
-        const salt = await bcrypt.genSalt(saltRound);
-        const bcryptPassword = await bcrypt.hash(password, salt);    
-
+        
         // Skicka info till databas för verifiering
-        const user = await pool.query("SELECT username FROM Users WHERE email = $1 AND pwhash = $2", [email, bcryptPassword]);
+        await conn.query("SELECT email, username, pwhash FROM Users WHERE email = ?", [email], async (err, result) => {
+            if (err) {
+                console.error(err.message);
+                return res.status(500).json({err});
+            } else {
+                // Returnera unauthorized om ingen användare hittas
+                if (result.length !== 1) {
+                    return res.status(401).json("Wrong username or password.");
+                }
+                const confirmPasswd = await bcrypt.compare(
+                    password,
+                    result[0].pwhash
+                );
+                
+                // Generera JWT för användaren om korrekt lösenord har angivits
+                if (confirmPasswd){
+                    const jwtToken = jwtGenerator(result[0].email, result[0].username);
+                    return res.status(200).json({jwtToken}); 
+                }
 
-        // Returnera unauthorized om ingen användare hittas
-        if (user.rows.length !== 1){
-            return res.status(401).json("Wrong username or password");
-        }
+                return res.status(401).json("Wrong username or password.");
+            }
+
             
-        // Generera JWT för användaren
-        const jwtToken = jwtGenerator(addUser.rows[0].email, addUser.rows[0].username);
-        return res.json({jwtToken});        
+        });
     } catch (err) {
         console.error(err.message);
     }
 });
 
-router.get("/is-verified", authorization, async (req, res) => {
+router.get("/is-verified", async (req, res) => {
     try {
         res.json(true);
     } catch (err) {
@@ -64,5 +82,6 @@ router.get("/is-verified", authorization, async (req, res) => {
         res.status(403).send("Unable to authorize.");
     }
 });
+
 
 module.exports = router;

@@ -2,17 +2,25 @@
 const express = require("express");
 const app = express();
 const cors = require("cors");
-const pool = require("./db");
+const connection = require("./db");
 
 app.use(cors());
 app.use(express.json());
 
+app.use("/auth", require("./auth/jwtAuth"));
 
-app.get("/", async (req, res) => {
+app.get("/get/all", async (req, res) => {
     try {
-        res.status(200).json("Works");
+        const books = await connection.query("SELECT * FROM books4days.Library", (err, result) => {
+            if (err) {
+                console.error(err.message);
+            }
+            res.json(result);
+        });
+        
+        //res.json({books});
     } catch (err) {
-        console.error("Something went wrong!");
+        console.error(err.message);
     }
 });
 
