@@ -12,6 +12,8 @@ const Warehouse = (props) => {
         coverurl: "",
     }]);
 
+    const [userLoaned, setUserLoaned] = useState([2]);
+
     const signedIn = true;
 
     async function getData() {
@@ -35,7 +37,6 @@ const Warehouse = (props) => {
     return (
        <Fragment>
            <Navbar signedIn={signedIn} />
-           <h1>WAREHOUSE</h1>
            <div>
                 <table>
                     <thead>
@@ -54,7 +55,9 @@ const Warehouse = (props) => {
                                 <td>{d.title}</td>
                                 <td>{d.author}</td>
                                 <td>{d.published}</td>
-                                <td><button className="bg-green-500 hover:bg-green-300 p-2 rounded-md">Låna</button></td>
+                                <td>{ userLoaned.includes(d.id) ? <button className="w-16 bg-green-700 hover:bg-green-500 p-2 rounded-md">Åter</button> :
+                                    <button className="w-16 bg-green-500 hover:bg-green-300 p-2 rounded-md">Låna</button>
+                                    }</td>
                             </tr>
                         ))}
                     </tbody>
