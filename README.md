@@ -1,71 +1,103 @@
-# Getting Started with Create React App
+# Library 
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# Databas
+## Skapa användare
+```
+CREATE DATABASE books4days;
 
-## Available Scripts
+CREATE USER ‘dev’@’%’ IDENTIFIED BY ‘password’;
+ALTER USER 'dev'@'%' IDENTIFIED WITH mysql_native_password BY 'password';
 
-In the project directory, you can run:
+GRANT ALL PRIVILEGES ON books4days.* TO dev@’%’;
+```
 
-### `npm start`
+## Skapa tables
+```
+CREATE TABLE Users (
+email VARCHAR(255) NOT NULL PRIMARY KEY,
+username VARCHAR(30) NOT NULL,
+pwhash VARCHAR(255) NOT NULL
+);
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+CREATE TABLE Library (
+id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+title VARCHAR(255) NOT NULL,
+author VARCHAR(255) NOT NULL,
+published INT(4),
+stock INT NOT NULL,
+coverurl VARCHAR(255)
+);
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+CREATE TABLE Loaned (
+id INT UNSIGNED AUTO_INCREMENT,
+email VARCHAR(255),
+book_id INT UNSIGNED,
+PRIMARY KEY (id),
+FOREIGN KEY (email) REFERENCES Users(email), 
+FOREIGN KEY (book_id) REFERENCES Library(id)
+);
+```
 
-### `npm test`
+## Stored procedures
+### Utlåning (loan_book)
+```
+CREATE DEFINER=`dev`@`%` PROCEDURE `loan_book`(IN email VARCHAR(255), IN book_id INT unsigned)
+BEGIN
+    START TRANSACTION;
+    -- Kontrollera antal tillgängliga böcker för titeln
+    SET @stock := (SELECT stock FROM books4days.Library WHERE id = book_id);
+    
+    -- Commit endast om det finns böcker att låna ut
+    IF @stock > 0 THEN
+        -- Minska antalet tillgängliga böcker
+        UPDATE books4days.Library SET stock = stock - 1 WHERE id = book_id;
+        -- Lägg till en ny rad i utlånade böcker
+        INSERT INTO books4days.Loaned (email, book_id) VALUES (email, book_id);
+        COMMIT;
+    END IF;    
+END
+```
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### Återlämning (return_book)
+```
+CREATE DEFINER=`dev`@`%` PROCEDURE `return_book`(IN email VARCHAR(255), IN book_id INT unsigned)
+BEGIN
+    START TRANSACTION;
+    -- Kontrollera om det finns en bokning
+    SET @e := (SELECT id FROM books4days.Loaned WHERE email = email AND book_id = book_id LIMIT 1);
 
-### `npm run build`
+    IF @e IS NOT NULL THEN
+        DELETE FROM books4days.Loaned WHERE email = email AND book_id = book_id LIMIT 1;
+        UPDATE books4days.Library SET stock = stock + 1 WHERE id = book_id;
+        COMMIT;
+    END IF;
+END
+```
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### Hämta lån för respektive användare (get_loans)
+```
+CREATE DEFINER=`dev`@`%` PROCEDURE `get_loans`(IN email VARCHAR(255))
+BEGIN
+-- Hämtar information om boken utifrån bokens id, men endast för de bokningar med epostadressen som anges som argument
+SELECT books4days.Library.title, books4days.Library.author, books4days.Library.published, books4days.Library.coverurl FROM books4days.Loaned INNER JOIN books4days.Library ON books4days.Loaned.book_id = books4days.Library.id WHERE books4days.Loaned.email = email;
+END
+```
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+### Skapa användare (add_user)
+```
+CREATE DEFINER=`dev`@`%` PROCEDURE `add_user`(IN par_email VARCHAR(255), IN par_username VARCHAR(30), IN par_pwhash VARCHAR(255))
+BEGIN
+    START TRANSACTION;
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+    -- Kontroll att användaren exisisterar
+    SET @userCheck := (SELECT email FROM books4days.Users WHERE email = par_email);
 
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
-# dsd_lib
+    -- Commit endast om användaren inte existerar
+    IF @userCheck IS NULL THEN
+        -- Lägg till en ny rad i användare
+        INSERT INTO books4days.Users (email, username, pwhash) VALUES (par_email, par_username, par_pwhash);
+        COMMIT;
+        SELECT email FROM books4days.Users WHERE email = par_email;
+    END IF;
+END
+```
