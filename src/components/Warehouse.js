@@ -12,7 +12,7 @@ const Warehouse = (props) => {
         coverurl: "",
     }]);
 
-    const [userLoaned, setUserLoaned] = useState([2]);
+    const [userLoaned, setUserLoaned] = useState([]);
 
     const signedIn = true;
 
@@ -28,6 +28,17 @@ const Warehouse = (props) => {
         } catch (err) {
             console.error(err.message);
         }
+    }
+
+    function addToLoan(e) {
+        setUserLoaned([...userLoaned, e])
+    }
+
+    function removeFromLoan(e) {
+        let old = userLoaned;
+        const index = old.indexOf(e);
+        old.splice(index,1);      
+        setUserLoaned([...old])
     }
 
     useEffect(() => {
@@ -55,8 +66,8 @@ const Warehouse = (props) => {
                                 <td>{d.title}</td>
                                 <td>{d.author}</td>
                                 <td>{d.published}</td>
-                                <td>{ userLoaned.includes(d.id) ? <button className="w-16 bg-green-700 hover:bg-green-500 p-2 rounded-md">Åter</button> :
-                                    <button className="w-16 bg-green-500 hover:bg-green-300 p-2 rounded-md">Låna</button>
+                                <td>{ userLoaned.includes(d.id) ? <button className="w-16 bg-green-700 hover:bg-green-500 p-2 rounded-md" onClick={e => removeFromLoan(d.id)}>Åter</button> :
+                                    <button className="w-16 bg-green-500 hover:bg-green-300 p-2 rounded-md" onClick={e => addToLoan(d.id)}>Låna</button>
                                     }</td>
                             </tr>
                         ))}
