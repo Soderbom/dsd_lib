@@ -43,18 +43,19 @@ FOREIGN KEY (book_id) REFERENCES Library(id)
 ```
 CREATE DEFINER=`dev`@`%` PROCEDURE `loan_book`(IN email VARCHAR(255), IN book_id INT unsigned)
 BEGIN
-    START TRANSACTION;
+	START TRANSACTION;
     -- Kontrollera antal tillgängliga böcker för titeln
     SET @stock := (SELECT stock FROM books4days.Library WHERE id = book_id);
-    
+	
     -- Commit endast om det finns böcker att låna ut
     IF @stock > 0 THEN
-        -- Minska antalet tillgängliga böcker
-        UPDATE books4days.Library SET stock = stock - 1 WHERE id = book_id;
+		-- Minska antalet tillgängliga böcker
+		UPDATE books4days.Library SET stock = stock - 1 WHERE id = book_id;
         -- Lägg till en ny rad i utlånade böcker
         INSERT INTO books4days.Loaned (email, book_id) VALUES (email, book_id);
-        COMMIT;
-    END IF;    
+		COMMIT;
+	END IF;	
+    CALL get_loans(email);
 END
 ```
 
@@ -62,15 +63,16 @@ END
 ```
 CREATE DEFINER=`dev`@`%` PROCEDURE `return_book`(IN email VARCHAR(255), IN book_id INT unsigned)
 BEGIN
-    START TRANSACTION;
-    -- Kontrollera om det finns en bokning
-    SET @e := (SELECT id FROM books4days.Loaned WHERE email = email AND book_id = book_id LIMIT 1);
+	START TRANSACTION;
+	-- Kontrollera om det finns en bokning
+	SET @e := (SELECT id FROM books4days.Loaned WHERE email = email AND book_id = book_id LIMIT 1);
 
-    IF @e IS NOT NULL THEN
-        DELETE FROM books4days.Loaned WHERE email = email AND book_id = book_id LIMIT 1;
-        UPDATE books4days.Library SET stock = stock + 1 WHERE id = book_id;
-        COMMIT;
-    END IF;
+	IF @e IS NOT NULL THEN
+		DELETE FROM books4days.Loaned WHERE email = email AND book_id = book_id LIMIT 1;
+		UPDATE books4days.Library SET stock = stock + 1 WHERE id = book_id;
+		COMMIT;
+	END IF;
+    CALL get_loans(email);
 END
 ```
 
