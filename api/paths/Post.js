@@ -10,9 +10,9 @@ router.post("/loan_book", async (req, res) => {
             if (err) {
                 console.error(err.message);
             } else {
-                res.status(200).json(result);
+                // [0] eftersom MySQL har en standard array inbakad i sin response
+                res.status(200).json(result[0]);
             }
-            
         });
 
     } catch (err) {

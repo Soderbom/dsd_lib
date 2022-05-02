@@ -12,7 +12,7 @@ router.delete("/return_book", async (req, res) => {
             if (err) {
                 console.error(err.message);
             } else {
-                res.status(200).json(result);
+                res.status(200).json(result[0]);
             }
         });
         

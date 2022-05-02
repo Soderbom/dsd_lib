@@ -17,14 +17,13 @@ router.get("/all", async (req, res) => {
     }
 });
 
-router.get("/user_loans", async (req, res) => {
+router.get("/user_loans/:email", async (req, res) => {
     try {
-        const { email } = req.body;
+        const { email } = req.params;
         await connection.query("CALL get_loans(?)", [email], (err, result) => {
             if (err) {
                 console.error(err.message);
             } else {
-                console.log(result[0].length)
                 if (result[0].length >= 1) {
                     res.status(200).json(result[0]);
                 } else {
