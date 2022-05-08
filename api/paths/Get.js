@@ -1,5 +1,17 @@
 const router = require("express").Router();
 const connection = require("../db");
+const authorization = require("../auth/authorization");
+
+router.get("/info", authorization, async (req, res) => {
+    try {
+        const email = req.email;
+        const username = req.username;
+
+        return {username, email}
+    } catch (err) {
+        console.error(err.message);
+    }
+});
 
 router.get("/all", async (req, res) => {
     try {
@@ -10,8 +22,6 @@ router.get("/all", async (req, res) => {
                 res.status(200).json(result);
             }
         });
-        
-        //res.json({books});
     } catch (err) {
         console.error(err.message);
     }
@@ -31,8 +41,6 @@ router.get("/user_loans/:email", async (req, res) => {
                 }
             }
         });
-        
-        //res.json({books});
     } catch (err) {
         console.error(err.message);
     }

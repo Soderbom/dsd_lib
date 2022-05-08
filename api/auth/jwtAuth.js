@@ -2,6 +2,7 @@ const router = require("express").Router();
 const conn = require("../db");
 const bcrypt = require("bcrypt");
 const jwtGenerator = require("./jwtGenerator");
+const authorization = require("./authorization");
 
 // TODO Verifiera korrekt epost
 
@@ -9,7 +10,7 @@ router.post("/register", async (req, res) => {
     
     try {        
         // Deconstruct body
-        const { username, email, password } = req.body;
+        const { email, username, password } = req.body;
 
         // Hasha lösenord
         const saltRound = 10;
@@ -74,7 +75,7 @@ router.post("/login", async (req, res) => {
     }
 });
 
-router.get("/is-verified", async (req, res) => {
+router.get("/is-verified", authorization, async (_, res) => {
     try {
         res.json(true);
     } catch (err) {

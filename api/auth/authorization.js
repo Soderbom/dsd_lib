@@ -16,6 +16,7 @@ module.exports = async (req, res, next) => {
         // TODO Vilka parametrar vill vi använda från token?
         // Uppdatera även jwtGenerator
         req.username = payload.username;
+        req.email = payload.email;
 
         next();
 

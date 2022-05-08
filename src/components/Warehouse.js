@@ -1,7 +1,7 @@
 import { Fragment, useEffect, useState } from "react"
 import Navbar from "./Navbar";
 
-const Warehouse = (props) => {
+const Warehouse = ({setAuth}) => {
     
     const [data, setData] = useState([{
         id: null,
@@ -14,8 +14,6 @@ const Warehouse = (props) => {
 
     const [userLoaned, setUserLoaned] = useState([]);
     const [email, setEmail] = useState("");
-
-    const signedIn = true;
 
     async function getData() {
         try {
@@ -50,6 +48,12 @@ const Warehouse = (props) => {
         }
     }
 
+    async function getUserInfo() {
+        const jwt = localStorage.token;
+        const payload = JSON.parse(atob(jwt.split('.')[1]));
+        setEmail(payload.email);
+    }
+
     async function addToLoan(book_id) {
         try {
             const body = {email, book_id}
@@ -63,6 +67,8 @@ const Warehouse = (props) => {
             const parseRes = await response.json();
             const idArray = getBookIdArray(parseRes);
             setUserLoaned([...idArray]);  
+            getData();
+            getUserLoans(); 
             
         } catch (err) {
             console.error(err.message);
@@ -82,6 +88,8 @@ const Warehouse = (props) => {
             const parseRes = await response.json();
             const idArray = getBookIdArray(parseRes);
             setUserLoaned([...idArray]);  
+            getData();
+            getUserLoans(); 
             
         } catch (err) {
             console.error(err.message);
@@ -89,15 +97,14 @@ const Warehouse = (props) => {
     }
 
     useEffect(() => {
-        // TODO implement fetching of email
-        setEmail("a");
+        getUserInfo();        
         getData();
-        getUserLoans();
+        getUserLoans();        
     }, []);
 
     return (
        <Fragment>
-           <Navbar signedIn={signedIn} />
+           <Navbar setAuth={setAuth} />
            {data.length > 1 && <div>
                 <table>
                     <thead>
@@ -106,6 +113,7 @@ const Warehouse = (props) => {
                             <th>Title</th>
                             <th>Author</th>
                             <th>Published</th>
+                            <th>In stock</th>
                             <th>Action</th> 
                         </tr>
                     </thead>
@@ -116,8 +124,9 @@ const Warehouse = (props) => {
                                 <td>{d.title}</td>
                                 <td>{d.author}</td>
                                 <td>{d.published}</td>
-                                <td>{ userLoaned.includes(d.id) ? <button className="w-16 bg-green-700 hover:bg-green-500 p-2 rounded-md" onClick={e => returnBook(d.id)}>Åter</button> :
-                                    <button className="w-16 bg-green-500 hover:bg-green-300 p-2 rounded-md" onClick={e => addToLoan(d.id)}>Låna</button>
+                                <td>{d.stock}</td>
+                                <td>{ userLoaned.includes(d.id) ? <button className="w-16 bg-darker-green hover:bg-greyish p-2 rounded-md text-cwhite" onClick={e => returnBook(d.id)}>Åter</button> :
+                                    <button className="w-16 bg-lighter-green hover:bg-greyish p-2 rounded-md text-cwhite" onClick={e => addToLoan(d.id)}>Låna</button>
                                     }</td>
                             </tr>
                         ))}
