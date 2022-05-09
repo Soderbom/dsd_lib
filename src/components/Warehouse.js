@@ -101,7 +101,7 @@ const Warehouse = ({setAuth}) => {
         getUserInfo();        
         getData();
         getUserLoans();        
-    }, []);
+    }, [email]);
 
     useEffect(() => {
         console.log(userLoaned)
