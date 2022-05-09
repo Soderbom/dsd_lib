@@ -34,7 +34,7 @@ const Register = ({setAuth}) => {
             
             if (parseRes.jwtToken) {
                 localStorage.setItem("token", parseRes.jwtToken);
-                //setAuth(true);
+                setAuth(true);
                 setErrorMessage("");
             } else {
                 setErrorMessage("Invalid credentials.");
