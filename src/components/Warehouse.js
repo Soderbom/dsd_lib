@@ -9,7 +9,7 @@ const Warehouse = ({setAuth}) => {
         author: "",
         published: null,
         stock: null,
-        coverurl: "",
+        coverurl: ""
     }]);
 
     const [userLoaned, setUserLoaned] = useState([]);
@@ -41,7 +41,7 @@ const Warehouse = ({setAuth}) => {
             });
             const parseRes = await response.json();
             const idArray = getBookIdArray(parseRes);
-            setUserLoaned([...idArray]);        
+            setUserLoaned([...idArray]);   
             
         } catch (err) {
             console.error(err.message);
@@ -66,9 +66,10 @@ const Warehouse = ({setAuth}) => {
             
             const parseRes = await response.json();
             const idArray = getBookIdArray(parseRes);
-            setUserLoaned([...idArray]);  
+            console.log(parseRes);
+            setUserLoaned(idArray); 
             getData();
-            getUserLoans(); 
+            
             
         } catch (err) {
             console.error(err.message);
@@ -87,9 +88,9 @@ const Warehouse = ({setAuth}) => {
             
             const parseRes = await response.json();
             const idArray = getBookIdArray(parseRes);
-            setUserLoaned([...idArray]);  
+            setUserLoaned(idArray);
             getData();
-            getUserLoans(); 
+            
             
         } catch (err) {
             console.error(err.message);
@@ -101,6 +102,10 @@ const Warehouse = ({setAuth}) => {
         getData();
         getUserLoans();        
     }, []);
+
+    useEffect(() => {
+        console.log(userLoaned)
+    })
 
     return (
        <Fragment>
@@ -125,7 +130,8 @@ const Warehouse = ({setAuth}) => {
                                 <td>{d.author}</td>
                                 <td>{d.published}</td>
                                 <td>{d.stock}</td>
-                                <td>{ userLoaned.includes(d.id) ? <button className="w-16 bg-darker-green hover:bg-greyish p-2 rounded-md text-cwhite" onClick={e => returnBook(d.id)}>Åter</button> :
+                                <td>{ userLoaned.includes(d.id) ? 
+                                    <button className="w-16 bg-darker-green hover:bg-greyish p-2 rounded-md text-cwhite" onClick={e => returnBook(d.id)}>Åter</button> :
                                     <button className="w-16 bg-lighter-green hover:bg-greyish p-2 rounded-md text-cwhite" onClick={e => addToLoan(d.id)}>Låna</button>
                                     }</td>
                             </tr>

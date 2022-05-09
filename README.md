@@ -61,18 +61,18 @@ END
 
 ### Återlämning (return_book)
 ```
-CREATE DEFINER=`dev`@`%` PROCEDURE `return_book`(IN email VARCHAR(255), IN book_id INT unsigned)
+CREATE DEFINER=`dev`@`%` PROCEDURE `return_book`(IN email_arg VARCHAR(255), IN book_id_arg INT unsigned)
 BEGIN
 	START TRANSACTION;
 	-- Kontrollera om det finns en bokning
-	SET @e := (SELECT id FROM books4days.Loaned WHERE email = email AND book_id = book_id LIMIT 1);
+	SET @e := (SELECT id FROM books4days.Loaned WHERE email = email_arg AND book_id = book_id_arg LIMIT 1);
 
 	IF @e IS NOT NULL THEN
-		DELETE FROM books4days.Loaned WHERE email = email AND book_id = book_id LIMIT 1;
-		UPDATE books4days.Library SET stock = stock + 1 WHERE id = book_id;
+		DELETE FROM books4days.Loaned WHERE email = email_arg AND book_id = book_id_arg;
+		UPDATE books4days.Library SET stock = stock + 1 WHERE id = book_id_arg;
 		COMMIT;
 	END IF;
-    CALL get_loans(email);
+    CALL get_loans(email_arg);
 END
 ```
 

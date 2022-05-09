@@ -2,17 +2,6 @@ const router = require("express").Router();
 const connection = require("../db");
 const authorization = require("../auth/authorization");
 
-router.get("/info", authorization, async (req, res) => {
-    try {
-        const email = req.email;
-        const username = req.username;
-
-        return {username, email}
-    } catch (err) {
-        console.error(err.message);
-    }
-});
-
 router.get("/all", async (req, res) => {
     try {
         await connection.query("SELECT id, title, author, published, stock, coverurl FROM books4days.Library", (err, result) => {
