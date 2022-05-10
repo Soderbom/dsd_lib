@@ -56,6 +56,7 @@ const Login = ({setAuth}) => {
                             <div className="p-2">
                                 <input className="w-full px-4 py-2 mt-2 border rounded-md focus:outline-none focus:ring-1 focus:ring-cwhite" type="email" placeholder="E-mail" name="email" value={email} onChange={e => onChange(e)}/>                        
                                 <input className="w-full px-4 py-2 mt-2 border rounded-md focus:outline-none focus:ring-1 focus:ring-cwhite" type="password" placeholder="Password" name="password" value={password} onChange={e => onChange(e)} />
+                                {errorMessage && <div className="text-warning-red">{errorMessage}</div>}
                                 <div className="my-4">
                                     <button className="p-4 bg-blueish rounded-sm hover:bg-lighter-green text-cwhite">Login</button>
                                     <Link className="px-4 text-cwhite" to="/register">Register</Link>

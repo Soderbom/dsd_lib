@@ -37,7 +37,7 @@ const Register = ({setAuth}) => {
                 setAuth(true);
                 setErrorMessage("");
             } else {
-                setErrorMessage("Invalid credentials.");
+                setErrorMessage("Account creation failed.");
             }
             
         } catch (err) {
@@ -56,6 +56,7 @@ const Register = ({setAuth}) => {
                                 <input className="w-full px-4 py-2 mt-2 border rounded-md focus:outline-none focus:ring-1 focus:ring-cwhite" type="email" name="email" placeholder="E-mail" value={email} onChange={e => onChange(e)}/>  
                                 <input className="w-full px-4 py-2 mt-2 border rounded-md focus:outline-none focus:ring-1 focus:ring-cwhite" type="text" name="username" placeholder="Username" value={username} onChange={e => onChange(e)}/>                        
                                 <input className="w-full px-4 py-2 mt-2 border rounded-md focus:outline-none focus:ring-1 focus:ring-cwhite" type="password" name="password" placeholder="Password" value={password} onChange={e => onChange(e)}/>
+                                {errorMessage && <div className="text-warning-red">{errorMessage}</div>}
                                 <div className="my-4">
                                     <button className="p-4 bg-blueish rounded-sm hover:bg-lighter-green text-cwhite">Register</button>
                                     <Link className="px-4 text-cwhite" to="/login">Sign in</Link>
