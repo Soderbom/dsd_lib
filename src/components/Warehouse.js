@@ -110,27 +110,27 @@ const Warehouse = ({setAuth}) => {
     return (
        <Fragment>
            <Navbar setAuth={setAuth} />
-           {data.length > 1 && <div>
-                <table>
-                    <thead>
+           {data.length > 1 && <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
+                <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+                    <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                         <tr>
-                            <th>ID</th>
-                            <th>Title</th>
-                            <th>Author</th>
-                            <th>Published</th>
-                            <th>In stock</th>
-                            <th>Action</th> 
+                            <th className="px-6 py-3">ID</th>
+                            <th className="px-6 py-3">Title</th>
+                            <th className="px-6 py-3">Author</th>
+                            <th className="px-6 py-3">Published</th>
+                            <th className="px-6 py-3">In stock</th>
+                            <th className="px-6 py-3">Action</th> 
                         </tr>
                     </thead>
                     <tbody >
                         {data.map(d => (
-                             <tr key={d.id}>
-                                <td>{d.id}</td>
-                                <td>{d.title}</td>
-                                <td>{d.author}</td>
-                                <td>{d.published}</td>
-                                <td>{d.stock}</td>
-                                <td>{ userLoaned.includes(d.id) ? 
+                             <tr className="bg-white border-b hover:bg-cwhite" key={d.id}>
+                                <td className="px-6 py-4">{d.id}</td>
+                                <td className="px-6 py-4">{d.title}</td>
+                                <td className="px-6 py-4">{d.author}</td>
+                                <td className="px-6 py-4">{d.published}</td>
+                                <td className="px-6 py-4">{d.stock}</td>
+                                <td className="px-6 py-4">{ userLoaned.includes(d.id) ? 
                                     <button className="w-16 bg-darker-green hover:bg-greyish p-2 rounded-md text-cwhite" onClick={e => returnBook(d.id)}>Åter</button> :
                                     <button className="w-16 bg-lighter-green hover:bg-greyish p-2 rounded-md text-cwhite" onClick={e => addToLoan(d.id)}>Låna</button>
                                     }</td>
