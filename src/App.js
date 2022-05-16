@@ -7,6 +7,7 @@ import {
 import React, {Fragment, useState, useEffect} from "react";
 
 import Warehouse from "./components/Warehouse";
+import Shelf from "./components/Shelf";
 import Login from "./components/Login";
 import Register from "./components/Register";
 
@@ -47,6 +48,7 @@ function App() {
           <Route path="/login" element={!isAuthenticated ? (<Login setAuth={setAuth} />) : (<Navigate replace to="/warehouse" />)} />
           <Route path="/register" element={!isAuthenticated ? <Register setAuth={setAuth} /> : (<Navigate replace to="/warehouse" />)}/>
           <Route path="/warehouse" element={isAuthenticated ? (<Warehouse setAuth={setAuth} />) : (<Navigate replace to="/login" />)}/>
+          <Route path="/shelf" element={isAuthenticated ? (<Shelf setAuth={setAuth} />) : (<Navigate replace to="/login" />)}/>
         </Routes>
         </div>
       </Router>

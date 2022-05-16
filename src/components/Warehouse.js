@@ -1,5 +1,6 @@
 import { Fragment, useEffect, useState } from "react"
 import Navbar from "./Navbar";
+import {Link} from "react-router-dom";
 
 const Warehouse = ({setAuth}) => {
     
@@ -103,10 +104,6 @@ const Warehouse = ({setAuth}) => {
         getUserLoans();        
     }, [email]);
 
-    useEffect(() => {
-        console.log(userLoaned)
-    })
-
     return (
        <Fragment>
            <Navbar setAuth={setAuth} />
@@ -114,18 +111,16 @@ const Warehouse = ({setAuth}) => {
                 <table className="text-sm text-left text-gray-500 dark:text-gray-400">
                     <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                         <tr>
-                            <th className="px-6 py-3">ID</th>
-                            <th className="px-6 py-3">Title</th>
-                            <th className="px-6 py-3">Author</th>
-                            <th className="px-6 py-3">Published</th>
-                            <th className="px-6 py-3">In stock</th>
-                            <th className="px-6 py-3">Action</th> 
+                            <th className="px-6 py-3">Titel</th>
+                            <th className="px-6 py-3">Författare</th>
+                            <th className="px-6 py-3">Publicerad</th>
+                            <th className="px-6 py-3">Antal i lager</th>
+                            <th className="px-6 py-3"></th> 
                         </tr>
                     </thead>
                     <tbody >
                         {data.map(d => (
                              <tr className="bg-white border-b" key={d.id}>
-                                <td className="px-6 py-4">{d.id}</td>
                                 <td className="px-6 py-4">{d.title}</td>
                                 <td className="px-6 py-4">{d.author}</td>
                                 <td className="px-6 py-4">{d.published}</td>
@@ -142,7 +137,7 @@ const Warehouse = ({setAuth}) => {
             }
             {data.length === 1 && 
                 <div>
-                    Ooops something went wrong.
+                    Oj, något gick fel.
                 </div>}
        </Fragment>
     );
