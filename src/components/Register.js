@@ -37,7 +37,7 @@ const Register = ({setAuth}) => {
                 setAuth(true);
                 setErrorMessage("");
             } else {
-                setErrorMessage("Account creation failed.");
+                setErrorMessage("Något gick fel.");
             }
             
         } catch (err) {
@@ -48,18 +48,18 @@ const Register = ({setAuth}) => {
         <Fragment>
             <div className="flex flex-col min-h-screen justify-center items-center ">
                 
-                <div className="border-1 border-cwhite rounded-lg p-10 w-1/2 flex bg-greyish shadow-2xl">
+                <div className="border-1 border-cwhite rounded-lg p-10 flex bg-greyish shadow-2xl">
                     <div className="flex flex-col " >
-                    <h1 className="text-cwhite text-4xl font-bold">Library: Register</h1>
+                    <h1 className="text-cwhite text-4xl font-bold">Library: Registrera</h1>
                         <form className="" onSubmit={onSubmitForm}>
                             <div className="p-2">
                                 <input className="w-full px-4 py-2 mt-2 border rounded-md focus:outline-none focus:ring-1 focus:ring-cwhite" type="email" name="email" placeholder="E-mail" value={email} onChange={e => onChange(e)}/>  
-                                <input className="w-full px-4 py-2 mt-2 border rounded-md focus:outline-none focus:ring-1 focus:ring-cwhite" type="text" name="username" placeholder="Username" value={username} onChange={e => onChange(e)}/>                        
-                                <input className="w-full px-4 py-2 mt-2 border rounded-md focus:outline-none focus:ring-1 focus:ring-cwhite" type="password" name="password" placeholder="Password" value={password} onChange={e => onChange(e)}/>
-                                {errorMessage && <div className="text-warning-red">{errorMessage}</div>}
+                                <input className="w-full px-4 py-2 mt-2 border rounded-md focus:outline-none focus:ring-1 focus:ring-cwhite" type="text" name="username" placeholder="Användarnamn" value={username} onChange={e => onChange(e)}/>                        
+                                <input className="w-full px-4 py-2 mt-2 border rounded-md focus:outline-none focus:ring-1 focus:ring-cwhite" type="password" name="password" placeholder="Lösenord" value={password} onChange={e => onChange(e)}/>
+                                {errorMessage && <div className="text-warning-red font-bold">{errorMessage}</div>}
                                 <div className="my-4">
-                                    <button className="p-4 bg-blueish rounded-sm hover:bg-lighter-green text-cwhite">Register</button>
-                                    <Link className="px-4 text-cwhite" to="/login">Sign in</Link>
+                                    <button className="p-4 bg-blueish rounded-sm hover:bg-lighter-green text-cwhite">Registrera</button>
+                                    <Link className="px-4 text-cwhite" to="/login">Logga in</Link>
                                 </div>
                             </div>
                         </form>
