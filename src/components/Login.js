@@ -1,8 +1,6 @@
 import { Fragment, useState} from "react";
 import {Link} from "react-router-dom";
 
-// Kommentera
-
 const Login = ({setAuth}) => {
 
     // useState för att uppdatera sidan med användarens inloggningsuppgifter
