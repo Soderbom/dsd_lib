@@ -1,8 +1,6 @@
 const router = require("express").Router();
 const connection = require("../db");
 
-// TODO Testa så att koden faktiskt fungerar och gör ändringar om det behövs
-
 router.delete("/return_book", async (req, res) => {
     try {
 

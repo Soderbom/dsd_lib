@@ -4,8 +4,6 @@ const bcrypt = require("bcrypt");
 const jwtGenerator = require("./jwtGenerator");
 const authorization = require("./authorization");
 
-// TODO Verifiera korrekt epost
-
 router.post("/register", async (req, res) => {
     
     try {        
@@ -16,8 +14,8 @@ router.post("/register", async (req, res) => {
         const saltRound = 10;
         const salt = await bcrypt.genSalt(saltRound);
         const bcryptPassword = await bcrypt.hash(password, salt);
-        // Kör store procedure för addUser     
-
+        
+        // Kör stored procedure för add_user
         await conn.query("CALL add_user(?,?,?)", [email, username, bcryptPassword], (err, result) => {
             if (err) {
                 console.error(err.message);
