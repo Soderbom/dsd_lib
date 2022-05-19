@@ -1,8 +1,11 @@
 import { Fragment, useState} from "react";
 import {Link} from "react-router-dom";
 
+// Kommentera
+
 const Login = ({setAuth}) => {
 
+    // useState för att uppdatera sidan med användarens inloggningsuppgifter
     const [inputs, setInput] = useState(
         {
             email: "",
@@ -13,17 +16,20 @@ const Login = ({setAuth}) => {
     const [errorMessage, setErrorMessage] = useState();
 
     const { email, password } = inputs;
-
+    
+    // Uppdatera sidan för användaren
     const onChange = (e) => {
         setInput({...inputs, [e.target.name] : e.target.value });
     };
 
+    // Förhindra submit av form
     const onSubmitForm = async (e) => {
         e.preventDefault();
 
         try {
             const body = { email, password };
 
+            // Konvertera till sträng
             const response = await fetch("http://localhost:5000/auth/login", {
                 method: "POST",
                 headers: {"Content-Type" : "application/json"},
@@ -32,6 +38,7 @@ const Login = ({setAuth}) => {
 
             const parseRes = await response.json();
             
+            // Om JWT är giltig ge användaren tillgång
             if (parseRes.jwtToken) {
                 localStorage.setItem("token", parseRes.jwtToken);
                 setAuth(true);
