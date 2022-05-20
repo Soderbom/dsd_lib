@@ -18,9 +18,8 @@ const Shelf = ({setAuth}) => {
 
     async function getUserLoans() {
         try {
-            const response = await fetch(`http://${ip}:5000/get/user_loans/${email}`, {
             // Hämta lån med avseende på email genom att anropa user_loans i paths/Get
-            const response = await fetch(`http://localhost:5000/get/user_loans/${email}`, {
+            const response = await fetch(`http://${ip}:5000/get/user_loans/${email}`, {            
                 method: "GET"
             });
             // Vänta på svar och sätt boken till setData som används i useState
@@ -45,9 +44,8 @@ const Shelf = ({setAuth}) => {
             // Deconstruct body
             const body = {email, book_id}
 
-            const response = await fetch(`http://${ip}:5000/delete/return_book`, {
             // Återlämna bok genom att anropa return_book i paths/Delete
-            const response = await fetch("http://localhost:5000/delete/return_book", {
+            const response = await fetch(`http://${ip}:5000/delete/return_book`, {
                 method: "DELETE",
                 headers: {"Content-Type": "application/json"},
                 // Konvertera till sträng
