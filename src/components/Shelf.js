@@ -4,6 +4,7 @@ import ip from "../misc.js";
 
 const Shelf = ({setAuth}) => {
     
+    // useState för att bevara uppgifter om boken
     const [data, setData] = useState([{
         id: null,
         title: "",
@@ -18,8 +19,11 @@ const Shelf = ({setAuth}) => {
     async function getUserLoans() {
         try {
             const response = await fetch(`http://${ip}:5000/get/user_loans/${email}`, {
+            // Hämta lån med avseende på email genom att anropa user_loans i paths/Get
+            const response = await fetch(`http://localhost:5000/get/user_loans/${email}`, {
                 method: "GET"
             });
+            // Vänta på svar och sätt boken till setData som används i useState
             const parseRes = await response.json();
             setData([...parseRes]);   
             
@@ -30,30 +34,36 @@ const Shelf = ({setAuth}) => {
 
     async function getUserInfo() {
         const jwt = localStorage.token;
+        // Plocka ut payloaden ur JWT och dekryptera
         const payload = JSON.parse(atob(jwt.split('.')[1]));
+        // Plocka ut email ur dekrypterad payload
         setEmail(payload.email);
     }
 
     async function returnBook(book_id) {
         try {
+            // Deconstruct body
             const body = {email, book_id}
 
             const response = await fetch(`http://${ip}:5000/delete/return_book`, {
+            // Återlämna bok genom att anropa return_book i paths/Delete
+            const response = await fetch("http://localhost:5000/delete/return_book", {
                 method: "DELETE",
                 headers: {"Content-Type": "application/json"},
+                // Konvertera till sträng
                 body: JSON.stringify(body)
             });
-            
+            // Vänta på svar och uppdatera användarens lån
             const parseRes = await response.json();
             setData(parseRes);
             getUserLoans();
-            
             
         } catch (err) {
             console.error(err.message);
         }
     }
 
+    // Vid inloggning, uppdatera sidan med avseende på inloggad email
     useEffect(() => {
         getUserInfo();       
         getUserLoans();
