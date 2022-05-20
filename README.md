@@ -43,7 +43,6 @@ FOREIGN KEY (book_id) REFERENCES Library(id)
 ```
 CREATE DEFINER=`dev`@`%` PROCEDURE `loan_book`(IN email VARCHAR(255), IN book_id INT unsigned)
 BEGIN
-	START TRANSACTION;
     -- Kontrollera antal tillgängliga böcker för titeln
     SET @stock := (SELECT stock FROM books4days.Library WHERE id = book_id);
 	
@@ -63,7 +62,6 @@ END
 ```
 CREATE DEFINER=`dev`@`%` PROCEDURE `return_book`(IN email_arg VARCHAR(255), IN book_id_arg INT unsigned)
 BEGIN
-	START TRANSACTION;
 	-- Kontrollera om det finns en bokning
 	SET @e := (SELECT id FROM books4days.Loaned WHERE email = email_arg AND book_id = book_id_arg LIMIT 1);
 
@@ -79,25 +77,20 @@ END
 ### Hämta lån för respektive användare (get_loans)
 ```
 CREATE DEFINER=`dev`@`%` PROCEDURE `get_loans`(IN email VARCHAR(255))
-BEGIN
--- Hämtar information om boken utifrån bokens id, men endast för de bokningar med epostadressen som anges som argument
-SELECT books4days.Library.title, books4days.Library.author, books4days.Library.published, books4days.Library.coverurl FROM books4days.Loaned INNER JOIN books4days.Library ON books4days.Loaned.book_id = books4days.Library.id WHERE books4days.Loaned.email = email;
-END
+SELECT books4days.Library.id, Library.title, books4days.Library.author, books4days.Library.published, books4days.Library.coverurl FROM books4days.Loaned INNER JOIN books4days.Library ON books4days.Loaned.book_id = books4days.Library.id WHERE books4days.Loaned.email = email
 ```
 
 ### Skapa användare (add_user)
 ```
 CREATE DEFINER=`dev`@`%` PROCEDURE `add_user`(IN par_email VARCHAR(255), IN par_username VARCHAR(30), IN par_pwhash VARCHAR(255))
 BEGIN
-    START TRANSACTION;
-
     -- Kontroll att användaren exisisterar
     SET @userCheck := (SELECT email FROM books4days.Users WHERE email = par_email);
 
     -- Commit endast om användaren inte existerar
     IF @userCheck IS NULL THEN
-        -- Lägg till en ny rad i användare
-        INSERT INTO books4days.Users (email, username, pwhash) VALUES (par_email, par_username, par_pwhash);
+		-- Lägg till en ny rad i användare
+		INSERT INTO books4days.Users (email, username, pwhash) VALUES (par_email, par_username, par_pwhash);
         COMMIT;
         SELECT email FROM books4days.Users WHERE email = par_email;
     END IF;
