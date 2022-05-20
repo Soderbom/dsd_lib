@@ -1,6 +1,6 @@
 import { Fragment, useEffect, useState } from "react"
 import Navbar from "./Navbar";
-import {Link} from "react-router-dom";
+import ip from "../misc.js";
 
 const Warehouse = ({setAuth}) => {
     
@@ -18,7 +18,7 @@ const Warehouse = ({setAuth}) => {
 
     async function getData() {
         try {
-            const response = await fetch("http://localhost:5000/get/all", {
+            const response = await fetch(`http://${ip}:5000/get/all`, {
                 method: "GET",
             });
             
@@ -37,7 +37,7 @@ const Warehouse = ({setAuth}) => {
 
     async function getUserLoans() {
         try {
-            const response = await fetch(`http://localhost:5000/get/user_loans/${email}`, {
+            const response = await fetch(`http://${ip}:5000/get/user_loans/${email}`, {
                 method: "GET"
             });
             const parseRes = await response.json();
@@ -59,7 +59,7 @@ const Warehouse = ({setAuth}) => {
         try {
             const body = {email, book_id}
 
-            const response = await fetch("http://localhost:5000/post/loan_book", {
+            const response = await fetch(`http://${ip}:5000/post/loan_book`, {
                 method: "POST",
                 headers: {"Content-Type": "application/json"},
                 body: JSON.stringify(body)
@@ -67,7 +67,6 @@ const Warehouse = ({setAuth}) => {
             
             const parseRes = await response.json();
             const idArray = getBookIdArray(parseRes);
-            console.log(parseRes);
             setUserLoaned(idArray); 
             getData();
             
@@ -81,7 +80,7 @@ const Warehouse = ({setAuth}) => {
         try {
             const body = {email, book_id}
 
-            const response = await fetch("http://localhost:5000/delete/return_book", {
+            const response = await fetch(`http://${ip}:5000/delete/return_book`, {
                 method: "DELETE",
                 headers: {"Content-Type": "application/json"},
                 body: JSON.stringify(body)

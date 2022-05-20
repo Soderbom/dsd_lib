@@ -1,5 +1,6 @@
 import { Fragment, useState, useEffect } from "react"
 import Navbar from "./Navbar";
+import ip from "../misc.js";
 
 const Shelf = ({setAuth}) => {
     
@@ -16,7 +17,7 @@ const Shelf = ({setAuth}) => {
 
     async function getUserLoans() {
         try {
-            const response = await fetch(`http://localhost:5000/get/user_loans/${email}`, {
+            const response = await fetch(`http://${ip}:5000/get/user_loans/${email}`, {
                 method: "GET"
             });
             const parseRes = await response.json();
@@ -37,7 +38,7 @@ const Shelf = ({setAuth}) => {
         try {
             const body = {email, book_id}
 
-            const response = await fetch("http://localhost:5000/delete/return_book", {
+            const response = await fetch(`http://${ip}:5000/delete/return_book`, {
                 method: "DELETE",
                 headers: {"Content-Type": "application/json"},
                 body: JSON.stringify(body)
@@ -65,16 +66,16 @@ const Shelf = ({setAuth}) => {
             {data.length >= 1 && <div className="flex flex-wrap justify-right w-screen/2 h-full m-20">
                     
                             {data.map(d => (
-                                <div class="max-w-sm lg:max-w-full lg:flex flex m-5">
-                                    <div class=" flex-none text-center">
-                                        <img src={d.coverurl} />
+                                <div className="max-w-sm lg:max-w-full lg:flex flex m-5">
+                                    <div className=" flex-none text-center">
+                                        <img src={d.coverurl} alt={d.title}/>
                                     </div>
-                                    <div class="p-4 flex flex-col justify-between leading-normal">
-                                            <div class="">
+                                    <div className="p-4 flex flex-col justify-between leading-normal">
+                                            <div className="">
                                                     {d.published} 
                                                     <button className="mx-5 w-10 bg-lighter-green hover:bg-warning-red p-2 rounded-full font-bold text-cwhite" onClick={e => returnBook(d.id)}>X</button>                           
-                                                    <div class="text-darker-green font-bold text-xl mb-2">{d.title}</div>
-                                                    <p class="text-lighter-green text-base">{d.author}</p>                                                 
+                                                    <div className="text-darker-green font-bold text-xl mb-2">{d.title}</div>
+                                                    <p className="text-lighter-green text-base">{d.author}</p>                                                 
                                             </div>
                                         
                                     </div>

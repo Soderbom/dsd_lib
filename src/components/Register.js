@@ -1,5 +1,6 @@
 import { Fragment, useState} from "react";
 import {Link} from "react-router-dom";
+import ip from "../misc.js";
 
 const Register = ({setAuth}) => {
     const [inputs, setInput] = useState(
@@ -24,7 +25,7 @@ const Register = ({setAuth}) => {
         try {
             const body = { email, username, password };
 
-            const response = await fetch("http://localhost:5000/auth/register", {
+            const response = await fetch(`http://${ip}:5000/auth/register`, {
                 method: "POST",
                 headers: {"Content-Type" : "application/json"},
                 body: JSON.stringify(body)
