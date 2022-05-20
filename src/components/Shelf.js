@@ -1,6 +1,5 @@
 import { Fragment, useState, useEffect } from "react"
 import Navbar from "./Navbar";
-import {Link} from "react-router-dom";
 
 const Shelf = ({setAuth}) => {
     
@@ -73,7 +72,7 @@ const Shelf = ({setAuth}) => {
                                     <div class="p-4 flex flex-col justify-between leading-normal">
                                             <div class="">
                                                     {d.published} 
-                                                    <button className="mx-5 w-10 bg-lighter-green hover:bg-greyish p-2 rounded-full font-bold text-cwhite" onClick={e => returnBook(d.id)}>X</button>                           
+                                                    <button className="mx-5 w-10 bg-lighter-green hover:bg-warning-red p-2 rounded-full font-bold text-cwhite" onClick={e => returnBook(d.id)}>X</button>                           
                                                     <div class="text-darker-green font-bold text-xl mb-2">{d.title}</div>
                                                     <p class="text-lighter-green text-base">{d.author}</p>                                                 
                                             </div>
