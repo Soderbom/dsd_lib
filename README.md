@@ -44,7 +44,7 @@ FOREIGN KEY (book_id) REFERENCES Library(id)
 CREATE DEFINER=`dev`@`%` PROCEDURE `loan_book`(IN email VARCHAR(255), IN book_id INT unsigned)
 BEGIN
     -- Kontrollera antal tillgängliga böcker för titeln
-    SET @stock := (SELECT stock FROM books4days.Library WHERE id = book_id);
+    SET @stock := (SELECT stock FROM books4days.Library WHERE id = book_id LOCK IN SHARE MODE);
 	
     -- Commit endast om det finns böcker att låna ut
     IF @stock > 0 THEN
