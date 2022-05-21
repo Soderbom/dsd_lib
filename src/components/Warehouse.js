@@ -106,32 +106,38 @@ const Warehouse = ({setAuth}) => {
     return (
        <Fragment>
            <Navbar setAuth={setAuth} />
-           {data.length > 1 && <div className="flex justify-center w-screen/2 sm:rounded-lg py-20">
-                <table className="text-sm text-left text-gray-500 dark:text-gray-400">
-                    <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-                        <tr>
-                            <th className="px-6 py-3">Titel</th>
-                            <th className="px-6 py-3">Författare</th>
-                            <th className="px-6 py-3">Publicerad</th>
-                            <th className="px-6 py-3">Antal i lager</th>
-                            <th className="px-6 py-3"></th> 
-                        </tr>
-                    </thead>
-                    <tbody >
-                        {data.map(d => (
-                             <tr className="bg-white border-b" key={d.id}>
-                                <td className="px-6 py-4">{d.title}</td>
-                                <td className="px-6 py-4">{d.author}</td>
-                                <td className="px-6 py-4">{d.published}</td>
-                                <td className="px-6 py-4">{d.stock}</td>
-                                <td className="px-6 py-4">{ userLoaned.includes(d.id) ? 
-                                    <button className="w-16 bg-darker-green hover:bg-greyish p-2 rounded-md text-cwhite" onClick={e => returnBook(d.id)}>Åter</button> :
-                                    <button className="w-16 bg-lighter-green hover:bg-greyish p-2 rounded-md text-cwhite" onClick={e => addToLoan(d.id)}>Låna</button>
-                                    }</td>
+           
+           {data.length > 1 && 
+           <div className="flex justify-center w-screen/2 sm:rounded-lg py-20">
+                <div>
+                
+                    <table className="text-sm text-left text-gray-500 dark:text-gray-400">
+                        <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                            <tr>
+                                <th className="px-6 py-3">Titel</th>
+                                <th className="px-6 py-3">Författare</th>
+                                <th className="px-6 py-3">Publicerad</th>
+                                <th className="px-6 py-3">Antal i lager</th>
+                                <th className="px-6 py-3"></th> 
                             </tr>
-                        ))}
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody >
+                            {data.map(d => (
+                                <tr className="bg-white border-b" key={d.id}>
+                                    <td className="px-6 py-4">{d.title}</td>
+                                    <td className="px-6 py-4">{d.author}</td>
+                                    <td className="px-6 py-4">{d.published}</td>
+                                    <td className="px-6 py-4">{d.stock}</td>
+                                    <td className="px-6 py-4">{ userLoaned.includes(d.id) ? 
+                                        <button className="w-16 bg-darker-green hover:bg-greyish p-2 rounded-md text-cwhite" onClick={e => returnBook(d.id)}>Åter</button> :
+                                        <button className="w-16 bg-lighter-green hover:bg-greyish p-2 rounded-md text-cwhite" onClick={e => addToLoan(d.id)}>Låna</button>
+                                        }</td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                    <button className=" bg-lighter-green hover:bg-greyish p-2 rounded-md text-cwhite my-10" onClick={e => getData()}>Uppdatera</button>
+                </div>
             </div>
             }
             {data.length === 1 && 
