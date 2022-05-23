@@ -5,6 +5,7 @@ import {
   Navigate
 } from "react-router-dom";
 import React, {Fragment, useState, useEffect} from "react";
+import ip from "./misc";
 
 import Warehouse from "./components/Warehouse";
 import Shelf from "./components/Shelf";
@@ -22,7 +23,7 @@ function App() {
 
   async function isAuth() {
      try {
-       const response = await fetch("http://localhost:5000/auth/is-verified", {
+       const response = await fetch(`http://${ip}:5000/auth/is-verified`, {
          method: "GET",
          headers: {token: localStorage.token}
        });
