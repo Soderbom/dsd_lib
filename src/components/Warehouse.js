@@ -113,9 +113,9 @@ const Warehouse = ({setAuth}) => {
     return (
        <Fragment>
            <Navbar setAuth={setAuth} />
-           
+           {/* Visa endast listan om det finns böcker tillgängliga, annars visas ett felmeddelande*/}
            {data.length > 1 && 
-           <div className="flex justify-center w-screen/2 sm:rounded-lg py-20">
+           <div className="flex justify-center w-screen/2  py-20">
                 <div>
                 
                     <table className="text-sm text-left text-gray-500 dark:text-gray-400">
@@ -135,9 +135,11 @@ const Warehouse = ({setAuth}) => {
                                     <td className="px-6 py-4">{d.author}</td>
                                     <td className="px-6 py-4">{d.published}</td>
                                     <td className="px-6 py-4">{d.stock}</td>
+                                    {/* Om användaren redan har lånat boken visas en annan knapp och en tredje inaktiv knapp om den är slut i lager*/}
                                     <td className="px-6 py-4">{ userLoaned.includes(d.id) ? 
                                         <button className="w-16 bg-darker-green hover:bg-greyish p-2 rounded-md text-cwhite" onClick={e => returnBook(d.id)}>Åter</button> :
-                                        <button className="w-16 bg-lighter-green hover:bg-greyish p-2 rounded-md text-cwhite" onClick={e => addToLoan(d.id)}>Låna</button>
+                                        d.stock > 0 ? <button className="w-16 bg-lighter-green hover:bg-greyish p-2 rounded-md text-cwhite" onClick={e => addToLoan(d.id)}>Låna</button> :
+                                        <button className="w-16 bg-warning-red p-2 rounded-md text-cwhite">-</button>
                                         }</td>
                                 </tr>
                             ))}
@@ -148,7 +150,7 @@ const Warehouse = ({setAuth}) => {
             </div>
             }
             {data.length === 1 && 
-                <div>
+                <div className="flex justify-center w-screen/2 py-20">
                     Oj, något gick fel.
                 </div>}
        </Fragment>
