@@ -1,7 +1,13 @@
+//ReactJS är ett JavaScript-bibliotek med öppen källkod som används för att bygga användargränssnitt och hantera vylager för webb och mobil applikationer.
 import { Fragment, useEffect, useState } from "react"
+
+// Ett vanligt mönster i React är att en komponent returnerar flera element. Fragment låter dig gruppera en lista med barn utan att lägga till extra noder till DOM
+//React useState Hook låter oss spåra tillstånd i en funktionskomponent. State hänvisar i allmänhet till data eller egenskaper som måste spåras i en applikation.
 import Navbar from "./Navbar";
 import ip from "../misc.js";
 
+// en Arrow Function Expression som registrerar ny användare. Funktionen kommer att ta hand om updatering av sidan efter varje ändring. 
+// setAuth ser till att en eutentiserade användaren är inlågad.
 const Warehouse = ({setAuth}) => {
     
     const [data, setData] = useState([{
@@ -12,16 +18,17 @@ const Warehouse = ({setAuth}) => {
         stock: null,
         coverurl: ""
     }]);
-
+// Funktionen setState används för att uppdatera tillståndet, användarens info. Den accepterar ett nytt tillståndsvärde och köar en omrendering av komponenten.
     const [userLoaned, setUserLoaned] = useState([]);
     const [email, setEmail] = useState("");
-
+// en asynkron funktion för att få info om alla böcker som funns i databasen.
     async function getData() {
         try {
+            // här kontaktas API:n för att få info i biblioteket.  
             const response = await fetch(`http://${ip}:5000/get/all`, {
                 method: "GET",
             });
-            
+            // här konverteras användarens info från ett javascript objekt till en JSON-sträng
             const parseRes = await response.json();
             setData(parseRes);
             
@@ -34,7 +41,7 @@ const Warehouse = ({setAuth}) => {
         return books.map(book => book.id);        
     }
 
-
+    // funkionen tar fram låne listan för en specefik användare.
     async function getUserLoans() {
         try {
             const response = await fetch(`http://${ip}:5000/get/user_loans/${email}`, {
@@ -48,13 +55,13 @@ const Warehouse = ({setAuth}) => {
             console.error(err.message);
         }
     }
-
+// funkionen tar fram info om en specefik användare.
     async function getUserInfo() {
         const jwt = localStorage.token;
         const payload = JSON.parse(atob(jwt.split('.')[1]));
         setEmail(payload.email);
     }
-
+// funkionen ser till att böckerna ska läggas till låntagres sida samtidigt som infon tas bort från biliotekets sidan.
     async function addToLoan(book_id) {
         try {
             const body = {email, book_id}
@@ -75,7 +82,7 @@ const Warehouse = ({setAuth}) => {
             console.error(err.message);
         }
     }
-
+// en funkion som möjliggör att användaren kan lämna tillbaka böcker.
     async function returnBook(book_id) {
         try {
             const body = {email, book_id}
@@ -96,7 +103,7 @@ const Warehouse = ({setAuth}) => {
             console.error(err.message);
         }
     }
-
+//Accepterar en funktion som innehåller imperativ, möjligen effektiv kod.
     useEffect(() => {
         getUserInfo();        
         getData();
