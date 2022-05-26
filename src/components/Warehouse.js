@@ -6,8 +6,8 @@ import { Fragment, useEffect, useState } from "react"
 import Navbar from "./Navbar";
 import ip from "../misc.js";
 
-// en Arrow Function Expression som registrerar ny användare. Funktionen kommer att ta hand om updatering av sidan efter varje ändring. 
-// setAuth ser till att en eutentiserade användaren är inlågad.
+// en Arrow Function Expression som registrerar ny användare. Funktionen kommer att ta hand om uppdatering av sidan efter varje ändring. 
+// setAuth ser till att en autentiserade användaren är inloggad.
 const Warehouse = ({setAuth}) => {
     
     const [data, setData] = useState([{
@@ -21,6 +21,7 @@ const Warehouse = ({setAuth}) => {
 // Funktionen setState används för att uppdatera tillståndet, användarens info. Den accepterar ett nytt tillståndsvärde och köar en omrendering av komponenten.
     const [userLoaned, setUserLoaned] = useState([]);
     const [email, setEmail] = useState("");
+
 // en asynkron funktion för att få info om alla böcker som funns i databasen.
     async function getData() {
         try {
@@ -41,7 +42,7 @@ const Warehouse = ({setAuth}) => {
         return books.map(book => book.id);        
     }
 
-    // funkionen tar fram låne listan för en specefik användare.
+    // funkionen tar fram lånelistan för en specifik användare.
     async function getUserLoans() {
         try {
             const response = await fetch(`http://${ip}:5000/get/user_loans/${email}`, {
@@ -55,13 +56,14 @@ const Warehouse = ({setAuth}) => {
             console.error(err.message);
         }
     }
-// funkionen tar fram info om en specefik användare.
+// funkionen tar fram info om en specifik användare från den lokala JWT.
     async function getUserInfo() {
         const jwt = localStorage.token;
+        // En JWT består av tre delar, den andra delen håller den information som har lagrats vid skapandet av token. Först måste base64 encodingen översättas.
         const payload = JSON.parse(atob(jwt.split('.')[1]));
         setEmail(payload.email);
     }
-// funkionen ser till att böckerna ska läggas till låntagres sida samtidigt som infon tas bort från biliotekets sidan.
+// funkionen ser till att böckerna ska läggas till låntagres sida samtidigt som infon tas bort från biliotekets sidan (genom stored procedures).
     async function addToLoan(book_id) {
         try {
             const body = {email, book_id}
@@ -103,7 +105,8 @@ const Warehouse = ({setAuth}) => {
             console.error(err.message);
         }
     }
-//Accepterar en funktion som innehåller imperativ, möjligen effektiv kod.
+// useEffect körs då variabeln "email" ändras. Detta sker t ex då användaren loggar in. Utan kopplingen till email kommer sidan endast visa en cache:ad version.
+// När useEffect körs andropas funktioner för att hämta data från databasen om tillgängliga böcker och nuvarande användarens lån.
     useEffect(() => {
         getUserInfo();        
         getData();
