@@ -1,4 +1,39 @@
 # Library 
+## Installation
+Ladda hem projektet med 
+```
+git clone https://github.com/Soderbom/dsd_lib.git
+cd dsd_lib
+npm install
+cd api
+npm install
+```
+Skapa två nya filer i /api ".env" och "db.jse:
+
+Lägg till raden nedan i .env:
+```
+jwtSecret="<SKRIV ETT LÖSENORD HÄR>"
+```
+
+Lägg till nedanstående i "db.js":
+```
+const mysql = require("mysql");
+
+const config = {
+    host: '<IP TILL DIN DATABAS',
+    user: 'dev',
+    password: 'password',
+    database: 'books4days'
+  };
+
+const conn = mysql.createConnection(config);
+
+module.exports = conn;
+```
+
+Slutligen ändra IP-adressen i /src/misc.js till IP-adressen där din API körs
+
+
 
 # Databas
 ## Skapa användare
