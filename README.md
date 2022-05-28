@@ -1,6 +1,6 @@
 # Library 
 ## Installation
-Ladda hem projektet med 
+Ladda hem projektet och installera med 
 ```
 git clone https://github.com/Soderbom/dsd_lib.git
 cd dsd_lib
@@ -8,7 +8,7 @@ npm install
 cd api
 npm install
 ```
-Skapa två nya filer i /api ".env" och "db.jse:
+Skapa två nya filer i /api ".env" och "db.js":
 
 Lägg till raden nedan i .env:
 ```
