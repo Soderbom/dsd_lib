@@ -73,6 +73,7 @@ router.post("/login", async (req, res) => {
     }
 });
 
+// Använder authorization funktionaliteten för att verifiera användarens JWT. Returnerar sant för att uppdatera setAuth
 router.get("/is-verified", authorization, async (_, res) => {
     try {
         res.json(true);

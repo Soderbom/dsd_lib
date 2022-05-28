@@ -1,8 +1,7 @@
 const router = require("express").Router();
 const connection = require("../db");
-const authorization = require("../auth/authorization");
 
-router.get("/all", async (req, res) => {
+router.get("/all", async (_, res) => {
     try {
         await connection.query("SELECT id, title, author, published, stock, coverurl FROM books4days.Library", (err, result) => {
             if (err) {
